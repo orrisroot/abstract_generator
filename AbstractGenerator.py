@@ -138,7 +138,11 @@ class AbstractGenerator:
 
 
 if __name__ == '__main__':
-    abgen = AbstractGenerator(image_dir='./private')
-    abgen.read_xlsx('./private/aini2016_example.xlsx')
-    abgen.write_docx('output.docx', './private/aini2016_template2.docx')
-
+    img_dir = './private'
+    input_xlsx = './private/aini2016_example.xlsx'
+    output_docx = 'output.docx'
+    template_docx = './private/aini2016_template2.docx'
+    
+    abgen = AbstractGenerator(image_dir=img_dir)
+    abgen.read_xlsx(input_xlsx)
+    abgen.write_docx(output_docx, template_docx)
