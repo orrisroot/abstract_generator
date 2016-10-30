@@ -7,7 +7,6 @@ Dependency: pandas, python-docx
 """
 import pandas as pd
 import docx
-# import docxtpl
 import re
 import os
 
@@ -18,19 +17,6 @@ class AbstractGenerator:
         self.image_dir = image_dir
         self.exreg4super = re.compile(r'(\(\w+\))')
         self.exreg4italic = re.compile(r'(\<i\>\w+\</i\>)')
-
-    def _insert_image(self, filename, image_filename):
-        doc = docx.Document(filename)
-
-        for paragraph in doc.paragraphs:
-            if '[[FIGURE]]' in paragraph.text:
-                #paragraph.text = ''
-                run = paragraph.add_run()
-                run.add_paragraph()
-                inline_shape = run.add_picture(image_filename, width=docx.shared.Pt(300))
-                run.add_paragraph()
-
-        doc.save(filename)
 
     def read_xlsx(self, filename):
         print('Reading: %s' % filename)
@@ -70,7 +56,6 @@ class AbstractGenerator:
             else:
                 p.add_run(author_list[j])
 
-
         # Affiliations
         p = doc.add_paragraph(record.affiliations)
         p.runs[0].font.size = docx.shared.Pt(9)
@@ -83,15 +68,12 @@ class AbstractGenerator:
         p = doc.add_paragraph('Keywords: ')
         p.add_run(record.keywords).italic = True
 
-
-
     def _write_doc_aini2016(self, doc, record):
         print('"%s"' % record['Title'])
 
         font = doc.styles['Normal'].font
         font.size = docx.shared.Pt(10)
         font.name = 'Lucida Grande'
-
 
         # ID + Title
         p = doc.add_paragraph(record['Title'])
@@ -142,7 +124,7 @@ if __name__ == '__main__':
     input_xlsx = './private/aini2016_example.xlsx'
     output_docx = 'output.docx'
     template_docx = './private/aini2016_template2.docx'
-    
+
     abgen = AbstractGenerator(image_dir=img_dir)
     abgen.read_xlsx(input_xlsx)
     abgen.write_docx(output_docx, template_docx)
