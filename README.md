@@ -1,4 +1,7 @@
 # abstract_generator
+![python-2.7, 3.3-blue](https://img.shields.io/badge/python-2.7, 3.3-blue.svg)
+![license](https://img.shields.io/badge/license-apache-blue.svg)
+
 generate abstract document from excel table
 
 ## dependencies
