@@ -23,9 +23,11 @@ class AbstractGenerator:
 
         for paragraph in doc.paragraphs:
             if '[[FIGURE]]' in paragraph.text:
-                paragraph.text = ''
+                #paragraph.text = ''
                 run = paragraph.add_run()
-                run.add_picture(image_filename)
+                run.add_paragraph()
+                inline_shape = run.add_picture(image_filename, width=docx.shared.Pt(300))
+                run.add_paragraph()
 
         doc.save(filename)
 
@@ -98,6 +100,7 @@ class AbstractGenerator:
         #files = ['0.docx', '1.docx']
         #self.combine_word_documents(files)
 
+        '''
         doc = docx.Document()
         for i in self.records.index:
             filename_single = str(i) + '.docx'
@@ -108,6 +111,7 @@ class AbstractGenerator:
             doc.add_page_break()
 
         doc.save(filename)
+        '''
 
     '''
     def combine_word_documents(self, files):
@@ -139,5 +143,5 @@ if __name__ == '__main__':
     abgen = AbstractGenerator()
     abgen.read_xlsx('./private/aini2016_example.xlsx')
     # abgen.write_docx('output.docx')
-    abgen.write_docx_with_template('output.docx', 'template.docx', template_words, image_col='FigureFileName', image_dir='private')
+    abgen.write_docx_with_template('output.docx', 'private/aini2016_template.docx', template_words, image_col='FigureFileName', image_dir='private')
 
