@@ -1,6 +1,7 @@
 # abstract_generator
 ![python-2.7, 3.5-blue](https://img.shields.io/badge/python-2.7, 3.5-blue.svg)
 ![license](https://img.shields.io/badge/license-apache-blue.svg)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/DaisukeMiyamoto/abstract_generator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/DaisukeMiyamoto/abstract_generator/?branch=master)
 
 generate abstract document from excel table
 
