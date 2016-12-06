@@ -204,7 +204,7 @@ class AbstractGenerator:
             num = self._removeParentheses(m.group(1).strip())
             name = m.group(2).strip()
             if num != '':
-                r = p.add_run(num + ' ')
+                r = p.add_run(num + '\u00A0')
                 r.font.superscript = True
             p.add_run(name)
             first = False
@@ -311,7 +311,7 @@ class AbstractGenerator:
                 author_tmp += ', '
             author_tmp += m.group(1).strip()
             first = False
-        p.add_run(author_tmp + ' (2016). ' + record['Title'] + '. ')
+        p.add_run(author_tmp + ' (2016). ' + record['Title'].strip().replace('\n', ' ') + '. ')
         p.add_run('Advances in Neuroinformatics IV. ').italic = True
         p.add_run('AINI 2016 and INCF Nodes Workshop Abstract: ' + record['Program No. Long'].strip() + '. DOI:' + record['DOI'].strip())
 
