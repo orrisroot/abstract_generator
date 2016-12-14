@@ -111,13 +111,32 @@ class AbstractGenerator:
             section.right_margin = docx.shared.Mm(20)
             section.left_margin = docx.shared.Mm(20)
             section.bottom_margin = docx.shared.Mm(15)
-            if self.template_type == 'aini2016':
-                self._write_doc_aini2016(doc, self.records.loc[i])
+            if first == True:
+                if self.template_type == 'aini2016':
+                    self._write_titlepage_aini2016(doc)
+                else:
+                    self._write_titlepage_jscpb2016(doc)
+                first = False
             else:
-                self._write_doc_jscpb2016(doc, self.records.loc[i])
-            first = False
+                if self.template_type == 'aini2016':
+                    self._write_doc_aini2016(doc, self.records.loc[i])
+                else:
+                    self._write_doc_jscpb2016(doc, self.records.loc[i])
 
         doc.save(filename)
+
+
+    def _write_titlepage_jscpb2016(self, doc):
+        p = doc.add_paragraph()
+        p.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.space_before = docx.shared.Pt(90)
+        p.paragraph_format.line_spacing = 1.0
+        p.paragraph_format.space_after = docx.shared.Pt(10)
+        r = p.add_run('The 38th Annual meeting of The Japan Society for Comparative Physiology and Biochemistry (JSCPB)')
+        r.font.size = docx.shared.Pt(18)
+        r.font.name = 'Times New Roman'
+        r.font.bold = True
+
 
     def _write_doc_jscpb2016(self, doc, record):
         print('"%s"' % record['title'])
@@ -149,6 +168,18 @@ class AbstractGenerator:
         p.add_run(record.keywords).italic = True
 
 
+    def _write_titlepage_aini2016(self, doc):
+        p = doc.add_paragraph()
+        p.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.space_before = docx.shared.Pt(90)
+        p.paragraph_format.line_spacing = 1.0
+        p.paragraph_format.space_after = docx.shared.Pt(10)
+        r = p.add_run('4th INCF Japan Node International Workshop Advances in Neuroinformatics 2016\nand\n14th INCF Nodes Workshop')
+        r.font.size = docx.shared.Pt(18)
+        r.font.name = 'Times New Roman'
+        r.font.bold = True
+
+
     def _write_doc_aini2016(self, doc, record):
         print('"%s"' % record['Title'])
         exreg4num = re.compile(r'\((\w+)\)')
@@ -170,6 +201,7 @@ class AbstractGenerator:
         p.paragraph_format.space_after = docx.shared.Pt(14)
         r = p.add_run(record['Title'].strip())
         r.font.size = docx.shared.Pt(12)
+        r.font.name = 'Times New Roman'
         r.bold = True
         r.italic = True
 
@@ -183,12 +215,20 @@ class AbstractGenerator:
         for author in authors:
             m = self.exreg4author.match(author)
             if first == False:
-                p.add_run(', ').bold = True
+                r = p.add_run(', ')
+                r.font.size = docx.shared.Pt(10)
+                r.font.name = 'Times New Roman'
+                r.bold = True
             name = m.group(1).strip().replace(' ', '\u00A0')
-            num = self._removeParentheses(m.group(2).strip())
-            p.add_run(name).bold = True
+            num = self._removeParentheses(m.group(2).strip()).replace(' ', '\u00A0')
+            r = p.add_run(name)
+            r.font.size = docx.shared.Pt(10)
+            r.font.name = 'Times New Roman'
+            r.bold = True
             if num != '':
                 r = p.add_run('\u00A0' + num)
+                r.font.size = docx.shared.Pt(10)
+                r.font.name = 'Times New Roman'
                 r.bold = True
                 r.font.superscript = True
             first = False
@@ -202,12 +242,14 @@ class AbstractGenerator:
             if first == False:
                 p.add_run(', ')
             num = self._removeParentheses(m.group(1).strip())
-            name = m.group(2).strip()
+            name = m.group(2).strip().replace(' ', '\u00A0')
             if num != '':
                 r = p.add_run(num + '\u00A0')
                 r.font.superscript = True
             p.add_run(name)
             first = False
+
+        # E-Mail
         p.add_run('\n' + record['e-mail'])
 
         # DOI
