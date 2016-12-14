@@ -184,9 +184,13 @@ class AbstractGenerator:
         print('"%s"' % record['Title'])
         exreg4num = re.compile(r'\((\w+)\)')
 
-        font = doc.styles['Normal'].font
-        font.size = docx.shared.Pt(10)
-        font.name = 'Times New Roman'
+        bodyFont = doc.styles['Normal'].font
+        bodyFont.size = docx.shared.Pt(10)
+        bodyFont.name = 'Times New Roman'
+
+        titleFont = doc.styles['Heading 3'].font
+        titleFont.size = docx.shared.Pt(12)
+        titleFont.color.rgb = None
 
         # Program Number
         #p = doc.add_paragraph()
@@ -195,10 +199,10 @@ class AbstractGenerator:
         #r = p.add_run(record['Program No.'].strip())
 
         # Title
-        p = doc.add_paragraph()
+        p = doc.add_heading(level=3)
         p.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
         p.paragraph_format.space_before = docx.shared.Pt(25)
-        p.paragraph_format.space_after = docx.shared.Pt(14)
+        p.paragraph_format.space_after = docx.shared.Pt(1)
         r = p.add_run(record['Title'].strip())
         r.font.size = docx.shared.Pt(12)
         r.font.name = 'Times New Roman'
@@ -206,10 +210,11 @@ class AbstractGenerator:
         r.italic = True
 
         # Authors
-        p = doc.add_paragraph()
-        p.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
-        p.paragraph_format.line_spacing = docx.shared.Pt(12)
-        p.paragraph_format.space_after = docx.shared.Pt(12)
+        #p = doc.add_paragraph()
+        #p.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+        #p.paragraph_format.line_spacing = docx.shared.Pt(12)
+        #p.paragraph_format.space_after = docx.shared.Pt(12)
+        p.add_run('\n\n')
         authors = self._toArray(record['Name'], '\n')
         first = True
         for author in authors:
@@ -232,9 +237,14 @@ class AbstractGenerator:
                 r.bold = True
                 r.font.superscript = True
             first = False
-        p.add_run('\n')
+        #p.add_run('\n')
 
         # Affiliation
+        p = doc.add_paragraph()
+        p.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.line_spacing = docx.shared.Pt(12)
+        p.paragraph_format.space_after = docx.shared.Pt(1)
+
         affiliations = self._toArray(record['Affiliation'], '\n')
         first = True
         for affiliation in affiliations:
@@ -250,7 +260,11 @@ class AbstractGenerator:
             first = False
 
         # E-Mail
-        p.add_run('\n' + record['e-mail'])
+        p = doc.add_paragraph()
+        p.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.line_spacing = docx.shared.Pt(12)
+        p.paragraph_format.space_after = docx.shared.Pt(12)
+        p.add_run(record['e-mail'])
 
         # DOI
         p = doc.add_paragraph('DOI:' + record['DOI'].strip())
