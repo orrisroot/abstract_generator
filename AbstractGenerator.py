@@ -18,8 +18,8 @@ class AbstractGenerator:
         self.records = None
         self.image_dir = image_dir
         self.template_type = template_type
-        self.exreg4author = re.compile(r'^([^\)]+)((?:\(.+\))*)$')
-        self.exreg4affiliation = re.compile(r'^((?:\(.+\))*)(.+)$')
+        self.exreg4author = re.compile(r'^([^\)]+)((?:\(\d+\))*)$')
+        self.exreg4affiliation = re.compile(r'^((?:\(\d+\))*)(.+)$')
         self.exreg4super = re.compile(r'(\(\w+\))')
         self.exreg4italic = re.compile(r'(\<i\>\w+\</i\>)')
         self.preferredImageMaxWidth = 14  # cm
