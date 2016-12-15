@@ -39,6 +39,15 @@ class AbstractGenerator:
 
         doc.save(filename)
 
+    def _setSectionPageStyle(self, section):
+        section.orientation = docx.enum.section.WD_ORIENT.PORTRAIT
+        section.page_height = docx.shared.Mm(297)
+        section.page_width = docx.shared.Mm(210)
+        section.top_margin = docx.shared.Mm(20)
+        section.right_margin = docx.shared.Mm(20)
+        section.left_margin = docx.shared.Mm(20)
+        section.bottom_margin = docx.shared.Mm(15)
+
     def _empty(self, text):
         if isinstance(text, float) and math.isnan(text):
             return True
@@ -99,29 +108,19 @@ class AbstractGenerator:
             doc = docx.Document()
 
         first = True
+        section = doc.sections[0]
+        self._setSectionPageStyle(section)
+        if self.template_type == 'aini2016':
+            self._write_titlepage_aini2016(doc)
+        else:
+            self._write_titlepage_jscpb2016(doc)
         for i in self.records.index:
-            if first == True:
-                section = doc.sections[0]
+            section = doc.add_section(docx.enum.section.WD_SECTION.NEW_PAGE)
+            self._setSectionPageStyle(section)
+            if self.template_type == 'aini2016':
+                self._write_doc_aini2016(doc, self.records.loc[i])
             else:
-                section = doc.add_section(docx.enum.section.WD_SECTION.NEW_PAGE)
-            section.orientation = docx.enum.section.WD_ORIENT.PORTRAIT
-            section.page_height = docx.shared.Mm(297)
-            section.page_width = docx.shared.Mm(210)
-            section.top_margin = docx.shared.Mm(20)
-            section.right_margin = docx.shared.Mm(20)
-            section.left_margin = docx.shared.Mm(20)
-            section.bottom_margin = docx.shared.Mm(15)
-            if first == True:
-                if self.template_type == 'aini2016':
-                    self._write_titlepage_aini2016(doc)
-                else:
-                    self._write_titlepage_jscpb2016(doc)
-                first = False
-            else:
-                if self.template_type == 'aini2016':
-                    self._write_doc_aini2016(doc, self.records.loc[i])
-                else:
-                    self._write_doc_jscpb2016(doc, self.records.loc[i])
+                self._write_doc_jscpb2016(doc, self.records.loc[i])
 
         doc.save(filename)
 
