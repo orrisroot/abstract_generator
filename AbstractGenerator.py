@@ -107,13 +107,15 @@ class AbstractGenerator:
         else:
             doc = docx.Document()
 
-        first = True
+        # Title Page
         section = doc.sections[0]
         self._setSectionPageStyle(section)
         if self.template_type == 'aini2016':
             self._write_titlepage_aini2016(doc)
         else:
             self._write_titlepage_jscpb2016(doc)
+
+        # Contents
         for i in self.records.index:
             section = doc.add_section(docx.enum.section.WD_SECTION.NEW_PAGE)
             self._setSectionPageStyle(section)
@@ -134,7 +136,7 @@ class AbstractGenerator:
         r = p.add_run('The 38th Annual meeting of The Japan Society for Comparative Physiology and Biochemistry (JSCPB)')
         r.font.size = docx.shared.Pt(18)
         r.font.name = 'Times New Roman'
-        r.font.bold = True
+        r.bold = True
 
 
     def _write_doc_jscpb2016(self, doc, record):
@@ -176,20 +178,39 @@ class AbstractGenerator:
         r = p.add_run('4th INCF Japan Node International Workshop Advances in Neuroinformatics 2016\nand\n14th INCF Nodes Workshop')
         r.font.size = docx.shared.Pt(18)
         r.font.name = 'Times New Roman'
-        r.font.bold = True
+        r.bold = True
 
 
     def _write_doc_aini2016(self, doc, record):
-        print('"%s"' % record['Title'])
-        exreg4num = re.compile(r'\((\w+)\)')
-
         bodyFont = doc.styles['Normal'].font
         bodyFont.size = docx.shared.Pt(10)
         bodyFont.name = 'Times New Roman'
 
+        sectionTitleFont = doc.styles['Heading 1'].font
+        sectionTitleFont.size = docx.shared.Pt(16)
+        sectionTitleFont.color.rgb = None
+
         titleFont = doc.styles['Heading 3'].font
         titleFont.size = docx.shared.Pt(12)
         titleFont.color.rgb = None
+
+        # Session Title
+        if self._empty(record['Session']) == False:
+            print('Session:%s' % record['Session'])
+            p = doc.add_heading(level=1)
+            p.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+            p.paragraph_format.space_before = docx.shared.Cm(9)
+            p.paragraph_format.line_spacing = 1.0
+            p.paragraph_format.space_after = docx.shared.Pt(16)
+            r = p.add_run(record['Session'].strip())
+            r.font.size = docx.shared.Pt(16)
+            r.font.name = 'Times New Roman'
+            r.bold = True
+            r.italic = True
+            section = doc.add_section(docx.enum.section.WD_SECTION.NEW_PAGE)
+            self._setSectionPageStyle(section)
+
+        print('"%s"' % record['Title'])
 
         # Program Number
         #p = doc.add_paragraph()
@@ -306,7 +327,7 @@ class AbstractGenerator:
                     first = False
                 p.add_run(item)
 
-        p.paragraph_format.space_after = docx.shared.Pt(14)
+        p.paragraph_format.space_after = docx.shared.Pt(12)
 
         # References
         items = self._toArray(record['References'], '\n')
